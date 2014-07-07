@@ -40,31 +40,31 @@ type TmdbConfig struct {
 type ImageConfig struct {
 	Base_url        string
 	Secure_base_url string
-	
+
 	//possible sizes for images
-	Backdrop_sizes  []string
-	Logo_sizes      []string
-	Poster_sizes    []string
-	Profile_sizes   []string
-	Still_sizes     []string
+	Backdrop_sizes []string
+	Logo_sizes     []string
+	Poster_sizes   []string
+	Profile_sizes  []string
+	Still_sizes    []string
 }
 
 //final metadata to be returned
 type Metadata struct {
 	//common fields
-	Id             int
-	Backdrop_path  string
-	Poster_path    string
-	Credits        TmdbCredits
-	Media_type     string
-	Config         TmdbConfig
-	
+	Id            int
+	Backdrop_path string
+	Poster_path   string
+	Credits       TmdbCredits
+	Media_type    string
+	Config        TmdbConfig
+
 	//movie specific fields
-	Imdb_id        string
-	Overview       string
-	Title          string
-	Release_date   string
-	
+	Imdb_id      string
+	Overview     string
+	Title        string
+	Release_date string
+
 	//tv specific fields
 	Name           string
 	First_air_date string

@@ -9,6 +9,7 @@ package metadata
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -73,30 +74,30 @@ func SearchTv(MediaName string) (TmdbResponse, error) {
 
 //get configurations
 func GetConfig() (TmdbConfig, error) {
-        if config.Change_keys == nil {
-                res, err := http.Get("http://api.themoviedb.org/3/configuration?api_key=" + API_KEY)
-	        var conf TmdbConfig
-	        if err != nil {
-		        return conf, err
-	        }
-	        if res.StatusCode != 200 {
-		        return conf, errors.New("Status Code 200 not recieved from TMDb")
-	        }
-	        body, err := ioutil.ReadAll(res.Body)
-	        err = json.Unmarshal(body, &conf)
-	        if err != nil {
-		        return TmdbConfig{}, err
-	        }
-	        config = conf
-	        return conf, nil
-        } else {
-                return config,nil
-        }
+	if config.Change_keys == nil {
+		res, err := http.Get("http://api.themoviedb.org/3/configuration?api_key=" + API_KEY)
+		var conf TmdbConfig
+		if err != nil {
+			return conf, err
+		}
+		if res.StatusCode != 200 {
+			return conf, errors.New("Status Code 200 not recieved from TMDb")
+		}
+		body, err := ioutil.ReadAll(res.Body)
+		err = json.Unmarshal(body, &conf)
+		if err != nil {
+			return TmdbConfig{}, err
+		}
+		config = conf
+		return conf, nil
+	} else {
+		return config, nil
+	}
 }
 
 //get basic information for movie
 func GetMovieDetails(MediaId string) (Metadata, error) {
-        res, err := http.Get("http://api.themoviedb.org/3/movie/"+MediaId+"?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/movie/" + MediaId + "?api_key=" + API_KEY)
 	var met Metadata
 	if err != nil {
 		return met, err
@@ -114,7 +115,7 @@ func GetMovieDetails(MediaId string) (Metadata, error) {
 
 //get credits for movie
 func GetMovieCredits(MediaId string) (TmdbCredits, error) {
-        res, err := http.Get("http://api.themoviedb.org/3/movie/"+MediaId+"/credits?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/movie/" + MediaId + "/credits?api_key=" + API_KEY)
 	var cred TmdbCredits
 	if err != nil {
 		return cred, err
@@ -132,7 +133,7 @@ func GetMovieCredits(MediaId string) (TmdbCredits, error) {
 
 //get basic information for Tv
 func GetTvDetails(MediaId string) (Metadata, error) {
-        res, err := http.Get("http://api.themoviedb.org/3/tv/"+MediaId+"?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/tv/" + MediaId + "?api_key=" + API_KEY)
 	var met Metadata
 	if err != nil {
 		return met, err
@@ -150,7 +151,7 @@ func GetTvDetails(MediaId string) (Metadata, error) {
 
 //get credits for Tv
 func GetTvCredits(MediaId string) (TmdbCredits, error) {
-        res, err := http.Get("http://api.themoviedb.org/3/tv/"+MediaId+"/credits?api_key=" + API_KEY)
+	res, err := http.Get("http://api.themoviedb.org/3/tv/" + MediaId + "/credits?api_key=" + API_KEY)
 	var cred TmdbCredits
 	if err != nil {
 		return cred, err
@@ -168,59 +169,68 @@ func GetTvCredits(MediaId string) (TmdbCredits, error) {
 
 //get all metadata for any kind of media
 func GetMetadata(MediaName string) (Metadata, error) {
-        var met Metadata
-        results,err := SearchMulti(preprocess(MediaName))
-        if err != nil {
-                return met,err
-        }
-        if results.Total_results == 0 {
-                return met,errors.New("No results found at TMDb")
-        }
-        if results.Results[0].Media_type == "person" {
-                return met,errors.New("Metadata for persons not supported")
-        } else if results.Results[0].Media_type == "tv" {
-                met,err = GetTvDetails(strconv.Itoa(results.Results[0].Id))
-                if err != nil {
-                        return met,err
-                }
-                met.Credits,err = GetTvCredits(strconv.Itoa(results.Results[0].Id))
-                if err != nil {
-                        return met,err
-                }
-                met.Config,err = GetConfig()
-                if err != nil {
-                        return met,err
-                }
-                met.Media_type = "tv"
-                met.Id = results.Results[0].Id
-                return met,nil
-        } else {
-                met,err = GetMovieDetails(strconv.Itoa(results.Results[0].Id))
-                if err != nil {
-                        return met,err
-                }
-                met.Credits,err = GetMovieCredits(strconv.Itoa(results.Results[0].Id))
-                if err != nil {
-                        return met,err
-                }
-                met.Config,err = GetConfig()
-                if err != nil {
-                        return met,err
-                }
-                met.Media_type = "movie"
-                met.Id = results.Results[0].Id
-                return met,nil
-        }
+	var met Metadata
+	results, err := SearchMulti(preprocess(MediaName))
+	if err != nil {
+		return met, err
+	}
+	if results.Total_results == 0 {
+		return met, errors.New("No results found at TMDb")
+	}
+	if results.Results[0].Media_type == "person" {
+		return met, errors.New("Metadata for persons not supported")
+	} else if results.Results[0].Media_type == "tv" {
+		met, err = GetTvDetails(strconv.Itoa(results.Results[0].Id))
+		if err != nil {
+			return met, err
+		}
+		met.Credits, err = GetTvCredits(strconv.Itoa(results.Results[0].Id))
+		if err != nil {
+			return met, err
+		}
+		met.Config, err = GetConfig()
+		if err != nil {
+			return met, err
+		}
+		met.Media_type = "tv"
+		met.Id = results.Results[0].Id
+		return met, nil
+	} else {
+		met, err = GetMovieDetails(strconv.Itoa(results.Results[0].Id))
+		if err != nil {
+			return met, err
+		}
+		met.Credits, err = GetMovieCredits(strconv.Itoa(results.Results[0].Id))
+		if err != nil {
+			return met, err
+		}
+		met.Config, err = GetConfig()
+		if err != nil {
+			return met, err
+		}
+		met.Media_type = "movie"
+		met.Id = results.Results[0].Id
+		return met, nil
+	}
 }
 
 //preprocess string
 func preprocess(MediaName string) string {
-        parts := strings.Split(MediaName, " ")
-        result := parts[0]
-        if len(parts)>1 {
-                for _,s:= range parts[1:] {
-                        result += "%20"+s
-                }
-        }
-        return result
+	parts := strings.Split(MediaName, " ")
+	result := parts[0]
+	if len(parts) > 1 {
+		for _, s := range parts[1:] {
+			result += "%20" + s
+		}
+	}
+	//strip off the extension
+	parts = strings.Split(result, ".")
+	if len(parts) > 1 {
+		result = ""
+		for _, s := range parts[:len(parts)-1] {
+			result += s
+		}
+	}
+	fmt.Println(result)
+	return result
 }
