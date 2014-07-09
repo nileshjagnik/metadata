@@ -16,6 +16,7 @@ type TmdbResponse struct {
 	Total_results int
 }
 
+//results format from Tmdb
 type TmdbResult struct {
 	Adult          bool
 	Name           string
@@ -37,6 +38,7 @@ type TmdbConfig struct {
 	Change_keys []string
 }
 
+//Image configurtion
 type ImageConfig struct {
 	Base_url        string
 	Secure_base_url string
@@ -49,26 +51,18 @@ type ImageConfig struct {
 	Still_sizes    []string
 }
 
-//final metadata to be returned
-type Metadata struct {
-	//common fields
+//Movie metadata structure
+type MovieMetadata struct {
 	Id            int
 	Backdrop_path string
 	Poster_path   string
 	Credits       TmdbCredits
 	Media_type    string
 	Config        TmdbConfig
-
-	//movie specific fields
-	Imdb_id      string
-	Overview     string
-	Title        string
-	Release_date string
-
-	//tv specific fields
-	Name           string
-	First_air_date string
-	Last_air_date  string
+	Imdb_id       string
+	Overview      string
+	Title         string
+	Release_date  string
 }
 
 type TmdbCredits struct {

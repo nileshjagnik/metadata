@@ -1,9 +1,8 @@
 Metadata Handler
 ==========
+We are creating a metadata library to be used in a server that helps us retrieve metadata information and artwork about media files. Here is a high level picture of how the library works: 
 
-Outline
-=======
-We are creating a metadata library to be used in a server that helps us retrieve metadata information and artwork about media files.
+![Metadata Library Architecture](docs/img/metadata_server.jpg)
 
 Details
 =======
