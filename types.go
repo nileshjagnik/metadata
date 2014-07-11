@@ -6,7 +6,13 @@
 
 package metadata
 
+import (
+	"encoding/xml"
+)
+
 const API_KEY string = "dc10d9b00f8a4a777539655342cbb647"
+const TVRAGE_APIKEY string = "L91ezivwoeU8DymX3Wtc"
+const TVDB_APIKEY string = "89DA7ABD734DD427"
 
 //response of search/multi
 type TmdbResponse struct {
@@ -82,4 +88,37 @@ type TmdbCrew struct {
 	Name         string
 	Job          string
 	Profile_path string
+}
+
+type tvrageResult struct {
+	XMLName     xml.Name     `xml:"Results"`
+	ShowDetails []tvrageShow `xml:"show"`
+}
+
+type tvrageShow struct {
+	Id   int    `xml:"showid"`
+	Name string `xml:"name"`
+}
+
+type tvdbResult struct {
+	XMLName       xml.Name      `xml:"Data"`
+	SeriesDetails []tvdbDetails `xml:"Series"`
+}
+
+type tvdbDetails struct {
+	SeriesId string `xml:"seriesid"`
+	Language string `xml:"language"`
+	Name     string `xml:"SeriesName"`
+}
+
+type tvMetadata struct {
+	SeriesName string `xml:"Series>SeriesName"`
+	Banner_Url string
+	Actors     string `xml:"Series>Actors"`
+	Overview   string `xml:"Series>Overview"`
+	Banner     string `xml:"Series>banner"`
+	FanArt     string `xml:"Series>fanart"`
+	Poster     string `xml:"Series>poster"`
+	Rating     string `xml:"Series>Rating"`
+	FirstAired string `xml:"Series>FirstAired"`
 }
