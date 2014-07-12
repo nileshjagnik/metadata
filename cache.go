@@ -11,6 +11,10 @@ import (
 )
 
 //FIXME - implement a cache here
-func cache_lookup(MediaName string, MediaType string) (string, error) {
+func cache_lookup(MediaName string) (string, error) {
 	return "", errors.New("Cache not implemented")
+}
+
+func add_to_cache(MediaName string, content string) (error) {
+        return errors.New("Cache not implemented")
 }
