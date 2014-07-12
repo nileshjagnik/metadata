@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	data, err := metadata.GetMetadata("NOVA - 35x15 - Car Of The Future.mpg","tv")
+	data, err := metadata.GetMetadata("Comedy Central Presents - 5x09 - Tom Papa (1).avi","tv")
 	if err != nil {
 		fmt.Println(err)
 	} else {
